@@ -1,0 +1,9 @@
+################################
+#        Cloaking rules        #
+################################
+
+# Main domain
+
+copilot.microsoft.com
+m365copilot.com
+copilotstudio.microsoft.com

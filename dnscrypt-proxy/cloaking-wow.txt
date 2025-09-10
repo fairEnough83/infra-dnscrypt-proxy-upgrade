@@ -1,0 +1,14 @@
+################################
+#        Cloaking rules        #
+################################
+
+wowtv.de
+www.wowtv.de
+api.wowtv.de
+player.wowtv.de
+cdn.wowtv.de
+static.wowtv.de
+auth.wowtv.de
+help.wowtv.de
+status.wowtv.de
+wowtv.com

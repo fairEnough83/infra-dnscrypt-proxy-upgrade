@@ -1,0 +1,10 @@
+[2021-07-20 09:54:14]	127.0.0.1	www.example.com	A	PASS	7323ms	cloudflare
+[2021-07-20 09:54:35]	127.0.0.1	www.example.com	A	PASS	0ms	-
+[2021-07-20 09:55:02]	127.0.0.1	www.example.com	A	PASS	0ms	-
+[2025-09-10 12:35:04]	127.0.0.1	dns.nextdns.io	A	PASS	22ms	dnscry.pt-oradea-ipv4		
+[2025-09-10 12:35:04]	127.0.0.1	jp.tiarap.org	A	PASS	26ms	dnscry.pt-bucharest-ipv4		
+[2025-09-10 12:35:04]	127.0.0.1	dns.twnic.tw	A	PASS	12ms	doh.ffmuc.net		
+[2025-09-10 12:35:05]	127.0.0.1	open.dns0.eu	A	PASS	43ms	dct-nl		
+[2025-09-10 12:35:05]	127.0.0.1	sky.rethinkdns.com	A	PASS	22ms	dnscry.pt-nuremberg-ipv4		
+[2025-09-10 12:35:06]	127.0.0.1	doh.appliedprivacy.net	A	PASS	27ms	dnscry.pt-amsterdam-ipv4		
+[2025-09-10 12:35:06]	127.0.0.1	ibksturm.synology.me	A	PASS	161ms	dnscry.pt-phoenix-ipv4		

@@ -1,0 +1,10 @@
+################################
+#        Cloaking rules        #
+################################
+
+disneyplus.com
+disney-plus.net
+dssott.com
+dssedge.com
+disneystreaming.com
+disney.cqloud.com

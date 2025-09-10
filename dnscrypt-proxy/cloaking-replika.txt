@@ -1,0 +1,7 @@
+################################
+#        Cloaking rules        #
+################################
+
+# Main domain
+api.replicastudios.com
+replika.ai

@@ -1,0 +1,12 @@
+################################
+#        Cloaking rules        #
+################################
+
+# Main domain
+primevideo.com
+amazonvideo.com
+video.a2z.com
+atv-ps.amazon.com
+aiv-cdn.net
+aiv-delivery.net
+pv-cdn.net

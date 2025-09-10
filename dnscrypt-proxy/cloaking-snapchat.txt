@@ -1,0 +1,7 @@
+################################
+#        Cloaking rules        #
+################################
+
+snapchat.com
+sc-cdn.net
+sc-static.net

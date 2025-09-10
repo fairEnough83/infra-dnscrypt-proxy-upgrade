@@ -1,0 +1,9 @@
+################################
+#        Cloaking rules        #
+################################
+
+redditmedia.com
+reddit.com
+redd.it
+redditstatic.com
+redditspace.com

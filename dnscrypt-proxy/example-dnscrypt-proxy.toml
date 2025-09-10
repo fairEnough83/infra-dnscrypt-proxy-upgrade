@@ -27,7 +27,7 @@
 ##
 ## Remove the leading # first to enable this; lines starting with # are ignored.
 
-# server_names = ['scaleway-fr', 'google', 'yandex', 'cloudflare']
+server_names = ['google-ipv6', 'google']
 
 
 ## List of local addresses and ports to listen to. Can be IPv4 and/or IPv6.
@@ -63,7 +63,7 @@ max_clients = 250
 ipv4_servers = true
 
 # Use servers reachable over IPv6 -- Do not enable if you don't have IPv6 connectivity
-ipv6_servers = false
+ipv6_servers = true
 
 # Use servers implementing the DNSCrypt protocol
 dnscrypt_servers = true
@@ -78,7 +78,7 @@ odoh_servers = false
 ## Require servers defined by remote sources to satisfy specific properties
 
 # Server must support DNS security extensions (DNSSEC)
-require_dnssec = false
+require_dnssec = true
 
 # Server must not log user queries (declarative)
 require_nolog = true
@@ -147,7 +147,7 @@ http3_probe = false
 ## Don't increase it too much. 10000 is the highest reasonable value.
 ## A timeout below 5000 is not recommended.
 
-timeout = 5000
+timeout = 2000
 
 
 ## Keepalive for HTTP (HTTPS, HTTP/2, HTTP/3) queries, in seconds
@@ -451,7 +451,7 @@ reject_ttl = 10
 
 ## TTL used when serving entries in cloaking-rules.txt
 
-# cloak_ttl = 600
+cloak_ttl = 120
 # cloak_ptr = false
 
 
@@ -471,12 +471,12 @@ cache_size = 4096
 
 ## Minimum TTL for cached entries
 
-cache_min_ttl = 2400
+cache_min_ttl = 3600
 
 
 ## Maximum TTL for cached entries
 
-cache_max_ttl = 86400
+cache_max_ttl = 4800
 
 
 ## Minimum TTL for negatively cached entries
@@ -488,6 +488,10 @@ cache_neg_min_ttl = 60
 
 cache_neg_max_ttl = 600
 
+categoryConfigurationBaseUrl = 'http://localhost:8083'
+apiKey = '53c06c2b-b13f-406a-8d8e-0becc3f4b244'
+configCacheTTL = 3
+categoryConfigurationJWTSecret = 'OTM2Yjc4ODAzODE2Nzg2YjNjMTFlNDEwZTY2MzJjMTY0OTI2OTljZjhlZDdmYWZkZjBkZjVhYjk5Nzg3MWRkZTM2MGNmY2Y5NTMxYWQwYmQyMzYzMmYxZmY1NTdiNTZjZGU3YjM2ODlhYjRmZDY3NTExY2FjYzE1ODRjZjMzZTg'
 
 ###############################################################################
 #                           Captive portal handling                            #
@@ -499,7 +503,7 @@ cache_neg_max_ttl = 600
 ## check for connectivity and captive portals, along with hard-coded
 ## IP addresses to return.
 
-# map_file = 'example-captive-portals.txt'
+map_file = 'example-captive-portals.txt'
 
 
 ###############################################################################
@@ -514,7 +518,7 @@ cache_neg_max_ttl = 600
 
 ## Addresses that the local DoH server should listen to
 
-# listen_addresses = ['127.0.0.1:3000']
+listen_addresses = ['127.0.0.1:9090']
 
 
 ## Path of the DoH URL. This is not a file, but the part after the hostname

@@ -1,0 +1,9 @@
+################################
+#        Cloaking rules        #
+################################
+
+twitch.com
+twitch.tv
+twitchcdn.net
+ttvnw.net
+jtvnw.net

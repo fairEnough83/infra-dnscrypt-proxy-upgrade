@@ -1,0 +1,8 @@
+################################
+#        Cloaking rules        #
+################################
+
+threads.net
+cdn.threads.net
+about.threads.net
+help.threads.net

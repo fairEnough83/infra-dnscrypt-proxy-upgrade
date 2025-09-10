@@ -393,7 +393,58 @@ func configureAllowedIPs(proxy *Proxy, config *Config) error {
 // configureAdditionalFiles - Configures forwarding, cloaking, and captive portal files
 func configureAdditionalFiles(proxy *Proxy, config *Config) {
 	proxy.forwardFile = config.ForwardFile
-	proxy.cloakFile = config.CloakFile
+
+	proxy.cloakFile = config.CloakingCategory.Default
+    proxy.cloakSafeSearchFile = config.CloakingCategory.SafeSearch
+    proxy.cloakHateFakeScamFile = config.CloakingCategory.HateFakeScam
+    proxy.cloakGamblingFile = config.CloakingCategory.Gambling
+    proxy.cloakPiracyFile = config.CloakingCategory.Piracy
+    proxy.cloakPornFile = config.CloakingCategory.Porn
+    proxy.cloakDatingFile = config.CloakingCategory.Dating
+    proxy.cloakDrugsFile = config.CloakingCategory.Drugs
+    proxy.cloakTypoSquattingFile = config.CloakingCategory.TypoSquatting
+
+    proxy.cloakBadServicesFile = config.CloakingServices.BadServices
+    proxy.cloakFacebookFile = config.CloakingServices.Facebook
+    proxy.cloakInstagramFile = config.CloakingServices.Instagram
+    proxy.cloakTikTokFile = config.CloakingServices.TikTok
+    proxy.cloakSnapchatFile = config.CloakingServices.Snapchat
+    proxy.cloakTwitterXFile = config.CloakingServices.TwitterX
+    proxy.cloakThreadsFile = config.CloakingServices.Threads
+    proxy.cloakRedditFile = config.CloakingServices.Reddit
+    proxy.cloakPinterestFile = config.CloakingServices.Pinterest
+    proxy.cloakTelegramFile = config.CloakingServices.Telegram
+    proxy.cloakBeRealFile = config.CloakingServices.BeReal
+
+    proxy.cloakYouTubeFile = config.CloakingServices.YouTube
+    proxy.cloakVimeoFile = config.CloakingServices.Vimeo
+    proxy.cloakDailyMotionFile = config.CloakingServices.DailyMotion
+    proxy.cloakNetflixFile = config.CloakingServices.Netflix
+    proxy.cloakTwitchFile = config.CloakingServices.Twitch
+    proxy.cloakDisneyPlusFile = config.CloakingServices.DisneyPlus
+    proxy.cloakHuluFile = config.CloakingServices.Hulu
+    proxy.cloakAmazonPrimeFile = config.CloakingServices.AmazonPrime
+    proxy.cloakMaxFile = config.CloakingServices.Max
+    proxy.cloakDaznFile = config.CloakingServices.Dazn
+    proxy.cloakWOWFile = config.CloakingServices.WOW
+    proxy.cloakJoynFile = config.CloakingServices.Joyn
+    proxy.cloakRtlPlusFile = config.CloakingServices.RTLPlus
+    proxy.cloakCrunchyrollFile = config.CloakingServices.Crunchyroll
+    proxy.cloakParamountFile = config.CloakingServices.Paramount
+    proxy.cloakTogoFile = config.CloakingServices.Togo
+    proxy.cloakOpenAIFile = config.CloakingServices.OpenAI
+    proxy.cloakGeminiFile = config.CloakingServices.Gemini
+    proxy.cloakGrokFile = config.CloakingServices.Grok
+    proxy.cloakClaudeFile = config.CloakingServices.Claude
+    proxy.cloakDeepSeekFile = config.CloakingServices.DeepSeek
+    proxy.cloakMistralFile = config.CloakingServices.Mistral
+    proxy.cloakCoPilotFile = config.CloakingServices.CoPilot
+    proxy.cloakReplikaFile = config.CloakingServices.Replika
+    proxy.cloakCharacterAIFile = config.CloakingServices.CharacterAI
+    proxy.cloakConfigBaseUrl = config.CloakConfigBaseUrl
+    proxy.apiKey = config.ApiKey
+    proxy.configCacheTTL = config.ConfigurationCacheTTL
+    proxy.cloakConfigJWTSecret = config.CloakConfigJWTSecret
 	proxy.captivePortalMapFile = config.CaptivePortals.MapFile
 }
 
