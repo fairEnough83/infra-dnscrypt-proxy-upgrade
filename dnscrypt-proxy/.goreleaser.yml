@@ -14,11 +14,9 @@ builds:
     goos:
       - linux
       - darwin
-      - windows
     goarch:
       - amd64
       - arm64
-    main: ./main.go
     binary: "{{ .ProjectName }}"
     ldflags:
       - "-s -w"
@@ -31,7 +29,6 @@ archives:
     format: tar.gz
     replacements:
       darwin: Darwin
-      windows: Windows
       amd64: x86_64
       arm64: arm64
     files:
