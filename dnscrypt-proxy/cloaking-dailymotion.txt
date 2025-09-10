@@ -1,0 +1,10 @@
+################################
+#        Cloaking rules        #
+################################
+
+dailymotion.com
+dmcdn.net
+dm-event.net
+dmxleo.com
+dailymotion.de
+dailymotion.fr

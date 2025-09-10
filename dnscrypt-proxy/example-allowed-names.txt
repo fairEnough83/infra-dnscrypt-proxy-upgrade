@@ -24,7 +24,39 @@ tracker.debian.org
 # However, blocking it prevents all sponsored links from the Google
 # search engine from being opened.
 googleadservices.com
+*tryohana*
+*try-ohana*
+ohana.app
+firebaseapp.com
+firebaseio.com
+googleapis.com
+googleusercontent.com
+mtalk.google.com
+bugsnag.com
+sentry.io
+doubleclick.net
+adtrafficquality.google
+analytics.google.com
+taboola.com
+googletagmanager.com
+cleverpush.com
+apple-dns.net
+onesignal.com
+accounts.google.com
+akadns.net
+apple.com
+cdn-apple.com
+app-analytics-services.com
+aaplimg.com
+icloud.com
+gstatic.com
+firebaseremoteconfig.googleapis.com
+fcmtoken.googleapis.com
+firebaseappcheck.googleapis.com
+firebaselogging-pa.googleapis.com
+app-analytics-services.com
 
+#example.com
 
 ## Time-based rules
 

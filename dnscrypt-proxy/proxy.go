@@ -3,8 +3,12 @@ package main
 import (
 	"context"
 	crypto_rand "crypto/rand"
+	b64 "encoding/base64"
 	"encoding/binary"
+	"encoding/json"
+	"math"
 	"net"
+	"net/http"
 	"os"
 	"runtime"
 	"strings"
@@ -12,9 +16,11 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/jedisct1/dlog"
 	clocksmith "github.com/jedisct1/go-clocksmith"
 	stamps "github.com/jedisct1/go-dnsstamps"
+	ttlcache "github.com/ReneKroon/ttlcache/v2"
 	"golang.org/x/crypto/curve25519"
 )
 
@@ -50,6 +56,54 @@ type Proxy struct {
 	localDoHPath                  string
 	mainProto                     string
 	cloakFile                     string
+	cloakSafeSearchFile           string
+	cloakPornFile                 string
+	cloakDatingFile               string
+	cloakDrugsFile                string
+	cloakHateFakeScamFile         string
+	cloakGamblingFile             string
+	cloakTypoSquattingFile        string
+	cloakPiracyFile               string
+	cloakBadServicesFile          string
+	cloakFacebookFile             string
+	cloakInstagramFile            string
+	cloakTikTokFile               string
+	cloakSnapchatFile             string
+	cloakTwitterXFile             string
+	cloakThreadsFile              string
+	cloakRedditFile               string
+	cloakPinterestFile            string
+	cloakTelegramFile             string
+	cloakBeRealFile               string
+	cloakYouTubeFile              string
+	cloakVimeoFile                string
+	cloakDailyMotionFile          string
+	cloakNetflixFile              string
+	cloakTwitchFile               string
+	cloakDisneyPlusFile           string
+	cloakHuluFile                 string
+	cloakAmazonPrimeFile          string
+	cloakMaxFile                  string
+	cloakDaznFile                 string
+	cloakWOWFile                  string
+	cloakJoynFile                 string
+	cloakRtlPlusFile              string
+	cloakCrunchyrollFile          string
+	cloakParamountFile            string
+	cloakTogoFile                 string
+	cloakOpenAIFile               string
+	cloakGeminiFile               string
+	cloakGrokFile                 string
+	cloakClaudeFile               string
+	cloakDeepSeekFile             string
+	cloakCoPilotFile              string
+	cloakMistralFile              string
+	cloakReplikaFile              string
+	cloakCharacterAIFile          string
+	cloakConfigBaseUrl            string
+	apiKey                        string
+	configCacheTTL                uint32
+	cloakConfigJWTSecret          string
 	forwardFile                   string
 	blockIPFormat                 string
 	blockIPLogFile                string
@@ -108,6 +162,69 @@ type Proxy struct {
 	listenersMu                   sync.Mutex
 	ipCryptConfig                 *IPCryptConfig
 }
+
+type User struct {
+	ID string `json:"id"`
+}
+
+type ManagedDevice struct {
+	ID string `json:"id"`
+}
+
+type Webfilterconfigurations struct {
+	ID                         int64    `json:"id"`
+	Porn                       bool     `json:"porn"`
+	Dating                     bool     `json:"dating"`
+	Drugs                      bool     `json:"drugs"`
+	Piracy                     bool     `json:"piracy"`
+	HateFakeScam               bool     `json:"hateFakeScam"`
+	Gambling                   bool     `json:"gambling"`
+	Typosquatting              bool     `json:"typoSquatting"`
+	SafeSearch                 bool     `json:"safeSearch"`
+	AccessList                 string   `json:"accessList"`
+	DenyList                   string   `json:"denyList"`
+	User                       User     `json:"user"`
+	AppAssociatedAccessList    string   `json:"appAssociatedAccessList"`
+	AppAssociatedDenyList      string   `json:"appAssociatedDenyList"`
+	AccessAliasList            string   `json:"accessAliasList"`
+	DenyAliasList              string   `json:"denyAliasList"`
+	DenySocialMediaServiceList []string `json:"denySocialMediaServiceList"`
+	DenyVideoServiceList       []string `json:"denyVideoServiceList"`
+	DenyAIServiceList          []string `json:"denyAIServiceList"`
+
+	AccessArray        []string
+	DenyArray          []string
+	AppAccessArray     []string
+	AppDenyArray       []string
+	AccessAliasArray   []DomainAliasInformation
+	DenyAliasArray     []DomainAliasInformation
+	Mode               string
+	UnblockingOverride bool
+}
+
+type Events struct {
+	ID                 string        `json:"id"`
+	Type               string        `json:"type"`
+	Category           string        `json:"category"`
+	Source             string        `json:"source"`
+	Data               string        `json:"data"`
+	Subject            string        `json:"subject"`
+	SubjectID          string        `json:"subjectId"`
+	Date               string        `json:"date"`
+	User               User          `json:"user"`
+	CreatorUser        User          `json:"creatorUser"`
+	ConfirmationNeeded bool          `json:"confirmationNeeded"`
+	ManagedDevice      ManagedDevice `json:"managedDevice"`
+}
+
+type DomainAliasInformation struct {
+	Domain string `json:"domain"`
+	Alias  string `json:"alias"`
+}
+
+const blockingInfoCacheSize = 1024 * 256
+
+var ttlCache ttlcache.Cache
 
 func (proxy *Proxy) registerUDPListener(conn *net.UDPConn) {
 	proxy.listenersMu.Lock()
@@ -252,10 +369,11 @@ func (proxy *Proxy) addLocalDoHListener(listenAddrStr string) {
 	FileDescriptorNum++
 
 	proxy.registerLocalDoHListener(listenerTCP.(*net.TCPListener))
-	dlog.Noticef("Now listening to https://%v%v [DoH]", listenAddrStr, proxy.localDoHPath)
+	dlog.Noticef("Now listening to http://%v%v [DoH]", listenAddrStr, proxy.localDoHPath)
 }
 
 func (proxy *Proxy) StartProxy() {
+	initCache(proxy.configCacheTTL)
 	proxy.questionSizeEstimator = NewQuestionSizeEstimator()
 	if _, err := crypto_rand.Read(proxy.proxySecretKey[:]); err != nil {
 		dlog.Fatal(err)
@@ -451,12 +569,16 @@ func (proxy *Proxy) udpListener(clientPc *net.UDPConn) {
 				clientPc,
 				time.Now(),
 				true,
+				"",
+				"",
+				"",
+				"ohana",
 			) // respond synchronously, but only to cached/synthesized queries
 			continue
 		}
 		go func() {
 			defer proxy.clientsCountDec()
-			proxy.processIncomingQuery("udp", proxy.mainProto, packet, &clientAddr, clientPc, time.Now(), false)
+			proxy.processIncomingQuery("udp", proxy.mainProto, packet, &clientAddr, clientPc, time.Now(), false, "", "", "", "ohana")
 		}()
 	}
 }
@@ -485,7 +607,7 @@ func (proxy *Proxy) tcpListener(acceptPc *net.TCPListener) {
 				return
 			}
 			clientAddr := clientPc.RemoteAddr()
-			proxy.processIncomingQuery("tcp", "tcp", packet, &clientAddr, clientPc, start, false)
+			proxy.processIncomingQuery("tcp", "tcp", packet, &clientAddr, clientPc, start, false, "", "", "", "ohana")
 		}()
 	}
 }
@@ -546,7 +668,7 @@ func (proxy *Proxy) localDoHListenerFromAddr(listenAddr *net.TCPAddr) error {
 		return err
 	}
 	proxy.registerLocalDoHListener(acceptPc.(*net.TCPListener))
-	dlog.Noticef("Now listening to https://%v%v [DoH]", listenAddr, proxy.localDoHPath)
+	dlog.Noticef("Now listening to http://%v%v [DoH]", listenAddr, proxy.localDoHPath)
 	return nil
 }
 
@@ -696,6 +818,10 @@ func (proxy *Proxy) processIncomingQuery(
 	clientPc net.Conn,
 	start time.Time,
 	onlyCached bool,
+	clientId string,
+	deviceId string,
+	currentMode string,
+	brand string,
 ) []byte {
 	// Initialize metrics for this query
 	clientAddrStr := "unknown"
@@ -710,8 +836,10 @@ func (proxy *Proxy) processIncomingQuery(
 		return response
 	}
 
+	blockingInfo := proxy.getBlockingInformation(clientId, currentMode, brand)
+
 	// Initialize plugin state
-	pluginsState := NewPluginsState(proxy, clientProto, clientAddr, serverProto, start)
+	pluginsState := NewPluginsState(proxy, clientProto, clientAddr, serverProto, start, clientId, deviceId, blockingInfo, brand)
 
 	var serverInfo *ServerInfo
 	var serverName string = "-"
@@ -822,6 +950,149 @@ func (proxy *Proxy) processIncomingQuery(
 	updateMonitoringMetrics(proxy, &pluginsState)
 
 	return response
+}
+
+func (proxy *Proxy) fetchBlockingInformation(userId string, baseUrl string, currentMode string, brand string) (Webfilterconfigurations, error) {
+
+	var urlQuery string = ""
+	if currentMode == "NotProtected" || currentMode == "Removed" {
+		return Webfilterconfigurations{-2, true, true, true, true, true, true, true, true, "", "", User{userId}, "", "", "", "", []string{}, []string{}, []string{}, nil, nil, nil, nil, nil, nil, "NotProtected", true}, nil
+	} else {
+		if currentMode != "" {
+			urlQuery = "?currentMode=" + currentMode
+		} else {
+			urlQuery = "?currentMode=NotSet"
+		}
+	}
+	v, missed := ttlCache.Get("access_token")
+	var accessToken string
+
+	if missed != nil {
+		token := jwt.NewWithClaims(jwt.SigningMethodHS512, jwt.MapClaims{
+			"sub":  "dnscrypt",
+			"auth": "ROLE_ADMIN",
+			"exp":  time.Now().Add(time.Hour * 1).Unix(),
+		})
+		// Sign and get the complete encoded token as a string using the secret
+		keyDec, _ := b64.StdEncoding.DecodeString(proxy.cloakConfigJWTSecret)
+		newToken, _ := token.SignedString(keyDec)
+		accessToken = newToken
+		ttlCache.Set("access_token", accessToken)
+	} else {
+		accessToken = v.(string)
+	}
+
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", baseUrl+"/api/web-filter-configurations/doh/"+userId+urlQuery, nil)
+	req.Header.Set("Authorization", "Bearer "+accessToken)
+	req.Header.Set("X-Firebase-AppCheck", "68a125ea-576d-44ac-8577-a1c5dbae90de")
+	req.Header.Set("X-Ohana-Firebase-Instance-ID", "e61fb3c0-3edc-4758-8a93-b0f212bb0e0b")
+	req.Header.Set("X-Ohana-Brand", brand)
+
+	if err != nil {
+		dlog.Error(err)
+	}
+
+	resp, err := client.Do(req)
+
+	var result Webfilterconfigurations
+
+	if err != nil {
+		dlog.Error(err)
+		return result, err
+	}
+
+	dlog.Error(resp.Body)
+
+	var decoder = json.NewDecoder(resp.Body)
+	//decoder.DisallowUnknownFields()
+	err2 := decoder.Decode(&result)
+
+	access := strings.TrimSuffix(result.AccessList, "\n")
+	deny := strings.TrimSuffix(result.DenyList, "\n")
+
+	accessAlias := strings.TrimSuffix(result.AccessAliasList, "\n")
+	denyAlias := strings.TrimSuffix(result.DenyAliasList, "\n")
+
+	appAccess := strings.TrimSuffix(result.AppAssociatedAccessList, "\n")
+	appDeny := strings.TrimSuffix(result.AppAssociatedDenyList, "\n")
+
+	var accessList []string
+	var denyList []string
+
+	var accessAliasList []DomainAliasInformation
+	var denyAliasList []DomainAliasInformation
+
+	var appAccessList []string
+	var appDenyList []string
+
+	// Notice the dereferencing asterisk *
+	json.Unmarshal([]byte(access), &accessList)
+	json.Unmarshal([]byte(deny), &denyList)
+
+	// Notice the dereferencing asterisk *
+	accessAliasError := json.Unmarshal([]byte(accessAlias), &accessAliasList)
+	if accessAliasError != nil {
+		dlog.Warn("access alias is null")
+	}
+
+	denyAliasError := json.Unmarshal([]byte(denyAlias), &denyAliasList)
+	if denyAliasError != nil {
+		dlog.Warn("deny alias is null")
+	}
+
+	json.Unmarshal([]byte(appAccess), &appAccessList)
+	json.Unmarshal([]byte(appDeny), &appDenyList)
+
+	result.AccessArray = accessList
+	result.DenyArray = denyList
+
+	result.AccessAliasArray = accessAliasList
+	result.DenyAliasArray = denyAliasList
+
+	result.AppAccessArray = appAccessList
+	result.AppDenyArray = appDenyList
+
+	result.Mode = currentMode
+	result.UnblockingOverride = currentMode == "NotProtected"
+	return result, err2
+}
+
+func (proxy *Proxy) getBlockingInformation(clientId string, currentMode string, brand string) Webfilterconfigurations {
+	v, missed := ttlCache.Get(clientId)
+	if missed != nil || v.(Webfilterconfigurations).Mode != currentMode {
+		//clear cache first
+		proxy.clearCache(clientId)
+		//TODO fetch blocking info from webservice
+
+		blockingInfo, err := proxy.fetchBlockingInformation(clientId, proxy.cloakConfigBaseUrl, currentMode, brand)
+		if err == nil {
+			v = blockingInfo
+			ttlCache.Set(clientId, v)
+			dlog.Error("successfully fetching configuration")
+			dlog.Error(v)
+		} else {
+			v, _ = ttlCache.Get("default") //return default value
+			ttlCache.Set(clientId, v)       //set default for 10 minutes
+			dlog.Error("error fetching configuration using default")
+			dlog.Error(err)
+		}
+	}
+	return v.(Webfilterconfigurations)
+}
+
+func (proxy *Proxy) clearCache(clientId string) {
+	ttlCache.Remove(clientId)
+}
+
+func initCache(configCacheTTL uint32) {
+	cache := ttlcache.NewCache()
+	cache.SetTTL(time.Duration(configCacheTTL) * time.Minute)
+	cache.SkipTTLExtensionOnHit(true)
+	cache.SetWithTTL("", Webfilterconfigurations{-1, false, false, false, false, false, false, false, false, "", "", User{""}, "", "", "", "", []string{}, []string{}, []string{}, nil, nil, nil, nil, nil, nil, "", false}, math.MaxInt64)        //test data
+	cache.SetWithTTL("default", Webfilterconfigurations{-2, false, false, false, false, false, false, false, false, "", "", User{""}, "", "", "", "", []string{}, []string{}, []string{}, nil, nil, nil, nil, nil, nil, "", false}, math.MaxInt64) //test data
+	cache.SetCacheSizeLimit(blockingInfoCacheSize)
+	ttlCache = *cache
 }
 
 func NewProxy() *Proxy {

@@ -1,0 +1,11 @@
+################################
+#        Cloaking rules        #
+################################
+
+telegram.com
+telegram.org
+telegram.me
+t.me
+tdesktop.com
+telegra.ph
+telegram-cdn.org

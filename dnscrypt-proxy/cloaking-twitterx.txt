@@ -1,0 +1,20 @@
+################################
+#        Cloaking rules        #
+################################
+
+twitter.com
+x.com
+t.co
+twimg.com
+tweetdeck.com
+api.twitter.com
+developer.twitter.com
+ads.twitter.com
+analytics.twitter.com
+business.twitter.com
+publish.twitter.com
+syndication.twitter.com
+static.twitter.com
+mobile.twitter.com
+help.twitter.com
+support.twitter.com

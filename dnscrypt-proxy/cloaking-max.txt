@@ -1,0 +1,16 @@
+################################
+#        Cloaking rules        #
+################################
+
+max.com
+hbomax.com
+hbo.com
+hbonow.com
+hbogo.com
+hbogoasia.com
+discomax.com
+maxgo.com
+hbomaxcdn.com
+hbo.com.c.footprint.net
+hbo.com.edgesuite.net
+hbo.map.fastly.net

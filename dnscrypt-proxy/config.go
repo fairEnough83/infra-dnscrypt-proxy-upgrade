@@ -68,7 +68,12 @@ type Config struct {
 	BlockIPLegacy            BlockIPConfigLegacy         `toml:"ip_blacklist"`
 	AllowIP                  AllowIPConfig               `toml:"allowed_ips"`
 	ForwardFile              string                      `toml:"forwarding_rules"`
-	CloakFile                string                      `toml:"cloaking_rules"`
+	CloakingCategory         BlockingCategoryConfig      `toml:"cloacking_categories"`
+	CloakingServices         BlockingServiceConfig       `toml:"cloacking_services"`
+	CloakConfigBaseUrl       string                      `toml:"categoryConfigurationBaseUrl"`
+	ApiKey                   string                      `toml:"apiKey"`
+	ConfigurationCacheTTL    uint32                      `toml:"configCacheTTL"`
+	CloakConfigJWTSecret     string                      `toml:"categoryConfigurationJWTSecret"`
 	CaptivePortals           CaptivePortalsConfig        `toml:"captive_portals"`
 	StaticsConfig            map[string]StaticConfig     `toml:"static"`
 	SourcesConfig            map[string]SourceConfig     `toml:"sources"`
@@ -299,6 +304,59 @@ type IPEncryptionConfig struct {
 
 type CaptivePortalsConfig struct {
 	MapFile string `toml:"map_file"`
+}
+
+type BlockingCategoryConfig struct {
+	Default       string `toml:"cloaking_rules"`
+	SafeSearch    string `toml:"safe_search"`
+	Porn          string `toml:"porn"`
+	Dating        string `toml:"dating"`
+	Drugs         string `toml:"drugs"`
+	HateFakeScam  string `toml:"hate_fake_scam"`
+	Gambling      string `toml:"gambling"`
+	TypoSquatting string `toml:"typosquatting"`
+	Piracy        string `toml:"piracy"`
+}
+
+type BlockingServiceConfig struct {
+	BadServices string `toml:"badservices"`
+	Facebook    string `toml:"facebook"`
+	Instagram   string `toml:"instagram"`
+	TikTok      string `toml:"tiktok"`
+    Snapchat	string `toml:"snapchat"`
+    TwitterX	string `toml:"twitterx"`
+    Threads		string `toml:"threads"`
+    Reddit		string `toml:"reddit"`
+    Pinterest	string `toml:"pinterest"`
+    Telegram	string `toml:"telegram"`
+    BeReal		string `toml:"bereal"`
+
+	YouTube     string `toml:"youtube"`
+	Vimeo       string `toml:"vimeo"`
+	DailyMotion string `toml:"dailymotion"`
+    Netflix 	string `toml:"netflix"`
+    Twitch		string `toml:"twitch"`
+    DisneyPlus	string `toml:"disneyplus"`
+    Hulu		string `toml:"hulu"`
+    AmazonPrime	string `toml:"amazonprime"`
+    Max			string `toml:"max"`
+    Dazn		string `toml:"dazn"`
+    WOW			string `toml:"wow"`
+    Joyn		string `toml:"joyn"`
+    RTLPlus		string `toml:"rtlplus"`
+    Crunchyroll	string `toml:"crunchyroll"`
+    Paramount	string `toml:"paramount"`
+	Togo		string `toml:"togo"`
+
+	OpenAI      string `toml:"openai"`
+	Gemini      string `toml:"gemini"`
+	Grok        string `toml:"grok"`
+	Claude      string `toml:"claude"`
+    DeepSeek    string `toml:"deepseek"`
+    Mistral     string `toml:"mistral"`
+    CoPilot     string `toml:"copilot"`
+	Replika		string `toml:"replika"`
+    CharacterAI string `toml:"characterai"`
 }
 
 type ConfigFlags struct {

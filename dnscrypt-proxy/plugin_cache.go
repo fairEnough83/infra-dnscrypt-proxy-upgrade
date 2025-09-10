@@ -4,6 +4,7 @@ import (
 	"crypto/sha512"
 	"encoding/binary"
 	"fmt"
+	"strings"
 	"sync"
 	"time"
 
@@ -125,6 +126,13 @@ func (plugin *PluginCacheResponse) Reload() error {
 	return nil
 }
 
+func ContainsIgnoreCase(a string, b string) bool {
+    return strings.Contains(
+        strings.ToLower(a),
+        strings.ToLower(b),
+    )
+}
+
 func (plugin *PluginCacheResponse) Eval(pluginsState *PluginsState, msg *dns.Msg) error {
 	if msg.Rcode != dns.RcodeSuccess && msg.Rcode != dns.RcodeNameError && msg.Rcode != dns.RcodeNotAuth {
 		return nil
@@ -132,6 +140,13 @@ func (plugin *PluginCacheResponse) Eval(pluginsState *PluginsState, msg *dns.Msg
 	if msg.Truncated {
 		return nil
 	}
+
+	//dont cache our blockings
+	if pluginsState.blockingReason != "" {
+		return nil
+	}
+
+
 	cacheKey := computeCacheKey(pluginsState, msg)
 	ttl := getMinTTL(
 		msg,
@@ -140,6 +155,13 @@ func (plugin *PluginCacheResponse) Eval(pluginsState *PluginsState, msg *dns.Msg
 		pluginsState.cacheNegMinTTL,
 		pluginsState.cacheNegMaxTTL,
 	)
+
+    if ContainsIgnoreCase(pluginsState.qName, "googleapis.com") {
+    	ttl = getMinTTL(msg, 10, 10, 10, 10)
+    } else if ContainsIgnoreCase(pluginsState.qName, "icloud.com") {
+    	ttl = getMinTTL(msg, 10, 10, 10, 10)
+    }
+
 	cachedResponse := CachedResponse{
 		expiration: time.Now().Add(ttl),
 		msg:        *msg,

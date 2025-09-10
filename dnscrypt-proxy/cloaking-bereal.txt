@@ -1,0 +1,9 @@
+################################
+#        Cloaking rules        #
+################################
+
+bereal.com
+bere.al
+mobile.bereal.com
+app.bere.al
+www.bere.al

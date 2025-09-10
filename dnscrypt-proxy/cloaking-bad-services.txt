@@ -1,0 +1,33 @@
+################################
+#        Cloaking rules        #
+################################
+
+#proxy services
+croxyproxy.com
+proxysite.com
+blockaway.net
+hide.me
+proxfree.com
+genmirror.com
+zalmos.com
+resiprox.com
+4everproxy.com
+kproxy.com
+hidester.com
+hidemyass.com
+filterbypass.me
+unblockvideos.com
+sneakyproxy.com
+vpnbook.com
+whoer.net
+floppydata.com
+iproyal.com
+oxylabs.io
+webshare.io
+proxyscrape.com
+okeyproxy.com
+smartproxy.com
+stormproxies.com
+brightdata.com
+netnut.io
+proxyium.com

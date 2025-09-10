@@ -16,20 +16,20 @@
 ## ads[0-9]*                | matches "ads" followed by one or more digits
 ## ads*.example*            | *, ? and [] can be used anywhere, but prefixes/suffixes are faster
 
-ad.*
-ads.*
-banner.*
-banners.*
-creatives.*
-oas.*
-oascentral.*        # inline comments are allowed after a pound sign
-stats.*
-tag.*
-telemetry.*
-tracker.*
-*.local
-eth0.me
-*.workgroup
+#ad.*
+#ads.*
+#banner.*
+#banners.*
+#creatives.*
+#oas.*
+#oascentral.*        # inline comments are allowed after a pound sign
+#stats.*
+#tag.*
+#telemetry.*
+#tracker.*
+#*.local
+#eth0.me
+#*.workgroup
 
 
 ## Prevent usage of Apple private relay, that bypasses DNS

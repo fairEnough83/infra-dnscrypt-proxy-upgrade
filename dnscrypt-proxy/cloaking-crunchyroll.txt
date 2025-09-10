@@ -1,0 +1,6 @@
+################################
+#        Cloaking rules        #
+################################
+crunchyroll.com
+crunchyroll.de
+crunchyroll.fr

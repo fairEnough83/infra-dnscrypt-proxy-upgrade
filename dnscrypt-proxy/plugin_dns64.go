@@ -101,6 +101,10 @@ func (plugin *PluginDNS64) Eval(pluginsState *PluginsState, msg *dns.Msg) error 
 		nil,
 		time.Now(),
 		false,
+		"",
+		"",
+		"",
+		"ohana",
 	)
 	plugin.proxy.clientsCountDec()
 
@@ -113,7 +117,7 @@ func (plugin *PluginDNS64) Eval(pluginsState *PluginsState, msg *dns.Msg) error 
 		return err
 	}
 
-	if resp.Rcode != dns.RcodeSuccess {
+	if err != nil || resp.Rcode != dns.RcodeSuccess {
 		return nil
 	}
 

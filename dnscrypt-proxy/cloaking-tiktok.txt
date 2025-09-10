@@ -1,0 +1,25 @@
+################################
+#        Cloaking rules        #
+################################
+
+api-h2.tiktokv.com
+api21-h2.tiktokv.com
+tiktokcdn-com.akamaized.net
+m.tiktok.com
+t.tiktok.com
+tiktok.com
+tiktok.org
+tiktokcdn.com
+tiktokv.com
+vt.tiktok.com
+v19.tiktokcdn.com
+v16.tiktokcdn.com
+api.tiktokv.com
+mon.tiktokv.com
+ib.tiktokv.com
+p16-tiktokcdn-com.akamaized.net
+v16-tiktokcdn-com.akamaized.net
+musical.ly
+muscdn.com
+isnssdk.com
+www.tiktok.com

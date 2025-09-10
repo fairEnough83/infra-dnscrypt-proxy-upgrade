@@ -1,0 +1,13 @@
+################################
+#        Cloaking rules        #
+################################
+
+netflix.com
+netflix.net
+netflixstudios.com
+nflxvideo.net
+nflximg.net
+nflximg.com
+nflxext.com
+nflxso.net
+nflxsearch.net

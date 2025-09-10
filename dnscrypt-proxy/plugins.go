@@ -90,6 +90,11 @@ type PluginsState struct {
 	cacheMinTTL                      uint32
 	cacheHit                         bool
 	dnssec                           bool
+	clientId                         string
+	deviceId                         string
+	blockingInfo                     Webfilterconfigurations
+	blockingReason                   string
+	brand							 string
 }
 
 func (proxy *Proxy) InitPluginsGlobals() error {
@@ -119,7 +124,9 @@ func (proxy *Proxy) InitPluginsGlobals() error {
 	if len(proxy.cloakFile) != 0 {
 		*queryPlugins = append(*queryPlugins, Plugin(new(PluginCloak)))
 	}
+
 	*queryPlugins = append(*queryPlugins, Plugin(new(PluginGetSetPayloadSize)))
+
 	if proxy.cache {
 		*queryPlugins = append(*queryPlugins, Plugin(new(PluginCache)))
 	}
@@ -146,6 +153,8 @@ func (proxy *Proxy) InitPluginsGlobals() error {
 	if len(proxy.blockIPFile) != 0 {
 		*responsePlugins = append(*responsePlugins, Plugin(new(PluginBlockIP)))
 	}
+
+    //TBD CHECK WHY
 	if len(proxy.dns64Resolvers) != 0 || len(proxy.dns64Prefixes) != 0 {
 		*responsePlugins = append(*responsePlugins, Plugin(new(PluginDNS64)))
 	}
@@ -155,7 +164,7 @@ func (proxy *Proxy) InitPluginsGlobals() error {
 
 	loggingPlugins := &[]Plugin{}
 	if len(proxy.queryLogFile) != 0 {
-		*loggingPlugins = append(*loggingPlugins, Plugin(new(PluginQueryLog)))
+		*loggingPlugins = append(*loggingPlugins, Plugin(new(PluginQueryLog)), Plugin(new(PluginEventReporter)))
 	}
 
 	for _, plugin := range *queryPlugins {
@@ -246,6 +255,10 @@ func NewPluginsState(
 	clientAddr *net.Addr,
 	serverProto string,
 	start time.Time,
+	clientId string, 
+	deviceId string, 
+	blockingInfo Webfilterconfigurations, 
+	brand string,
 ) PluginsState {
 	return PluginsState{
 		action:                           PluginsActionContinue,
@@ -267,6 +280,10 @@ func NewPluginsState(
 		requestStart:                     start,
 		maxUnencryptedUDPSafePayloadSize: MaxDNSUDPSafePacketSize,
 		sessionData:                      make(map[string]interface{}),
+		clientId:                         clientId,
+		deviceId:                         deviceId,
+		blockingInfo:                     blockingInfo,
+		brand: 							  brand,
 	}
 }
 
