@@ -12,17 +12,17 @@ import (
 	"github.com/miekg/dns"
 )
 
-const StaleResponseTTL = 30 * time.Second
+type CachedResponses struct {
+	cache     *sievecache.ShardedSieveCache[[32]byte, CachedResponse]
+	cacheOnce sync.Once
+}
 
 type CachedResponse struct {
 	expiration time.Time
 	msg        dns.Msg
 }
 
-type CachedResponses struct {
-	cache     *sievecache.ShardedSieveCache[[32]byte, CachedResponse]
-	cacheOnce sync.Once
-}
+const StaleResponseTTL = 30 * time.Second
 
 var cachedResponses CachedResponses
 
@@ -44,8 +44,6 @@ func computeCacheKey(pluginsState *PluginsState, msg *dns.Msg) [32]byte {
 
 	return sum
 }
-
-// ---
 
 type PluginCache struct{}
 
@@ -127,10 +125,10 @@ func (plugin *PluginCacheResponse) Reload() error {
 }
 
 func ContainsIgnoreCase(a string, b string) bool {
-    return strings.Contains(
-        strings.ToLower(a),
-        strings.ToLower(b),
-    )
+	return strings.Contains(
+		strings.ToLower(a),
+		strings.ToLower(b),
+	)
 }
 
 func (plugin *PluginCacheResponse) Eval(pluginsState *PluginsState, msg *dns.Msg) error {
@@ -146,7 +144,6 @@ func (plugin *PluginCacheResponse) Eval(pluginsState *PluginsState, msg *dns.Msg
 		return nil
 	}
 
-
 	cacheKey := computeCacheKey(pluginsState, msg)
 	ttl := getMinTTL(
 		msg,
@@ -156,11 +153,11 @@ func (plugin *PluginCacheResponse) Eval(pluginsState *PluginsState, msg *dns.Msg
 		pluginsState.cacheNegMaxTTL,
 	)
 
-    if ContainsIgnoreCase(pluginsState.qName, "googleapis.com") {
-    	ttl = getMinTTL(msg, 10, 10, 10, 10)
-    } else if ContainsIgnoreCase(pluginsState.qName, "icloud.com") {
-    	ttl = getMinTTL(msg, 10, 10, 10, 10)
-    }
+	if ContainsIgnoreCase(pluginsState.qName, "googleapis.com") {
+		ttl = getMinTTL(msg, 10, 10, 10, 10)
+	} else if ContainsIgnoreCase(pluginsState.qName, "icloud.com") {
+		ttl = getMinTTL(msg, 10, 10, 10, 10)
+	}
 
 	cachedResponse := CachedResponse{
 		expiration: time.Now().Add(ttl),
