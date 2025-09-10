@@ -94,7 +94,7 @@ type PluginsState struct {
 	deviceId                         string
 	blockingInfo                     Webfilterconfigurations
 	blockingReason                   string
-	brand							 string
+	brand                            string
 }
 
 func (proxy *Proxy) InitPluginsGlobals() error {
@@ -154,13 +154,14 @@ func (proxy *Proxy) InitPluginsGlobals() error {
 		*responsePlugins = append(*responsePlugins, Plugin(new(PluginBlockIP)))
 	}
 
-    //TBD CHECK WHY
+	//TBD CHECK WHY
 	if len(proxy.dns64Resolvers) != 0 || len(proxy.dns64Prefixes) != 0 {
 		*responsePlugins = append(*responsePlugins, Plugin(new(PluginDNS64)))
 	}
-	if proxy.cache {
+
+	/**if proxy.cache {
 		*responsePlugins = append(*responsePlugins, Plugin(new(PluginCacheResponse)))
-	}
+	}**/
 
 	loggingPlugins := &[]Plugin{}
 	if len(proxy.queryLogFile) != 0 {
@@ -255,9 +256,9 @@ func NewPluginsState(
 	clientAddr *net.Addr,
 	serverProto string,
 	start time.Time,
-	clientId string, 
-	deviceId string, 
-	blockingInfo Webfilterconfigurations, 
+	clientId string,
+	deviceId string,
+	blockingInfo Webfilterconfigurations,
 	brand string,
 ) PluginsState {
 	return PluginsState{
@@ -283,7 +284,7 @@ func NewPluginsState(
 		clientId:                         clientId,
 		deviceId:                         deviceId,
 		blockingInfo:                     blockingInfo,
-		brand: 							  brand,
+		brand:                            brand,
 	}
 }
 
