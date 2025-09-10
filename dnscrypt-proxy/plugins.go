@@ -127,9 +127,10 @@ func (proxy *Proxy) InitPluginsGlobals() error {
 
 	*queryPlugins = append(*queryPlugins, Plugin(new(PluginGetSetPayloadSize)))
 
-	if proxy.cache {
+	/**if proxy.cache {
 		*queryPlugins = append(*queryPlugins, Plugin(new(PluginCache)))
-	}
+	}**/
+	
 	if len(proxy.forwardFile) != 0 {
 		*queryPlugins = append(*queryPlugins, Plugin(new(PluginForward)))
 	}
