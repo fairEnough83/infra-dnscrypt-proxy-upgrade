@@ -130,7 +130,7 @@ func (proxy *Proxy) InitPluginsGlobals() error {
 	/**if proxy.cache {
 		*queryPlugins = append(*queryPlugins, Plugin(new(PluginCache)))
 	}**/
-	
+
 	if len(proxy.forwardFile) != 0 {
 		*queryPlugins = append(*queryPlugins, Plugin(new(PluginForward)))
 	}
@@ -395,8 +395,8 @@ func (pluginsState *PluginsState) ApplyResponsePlugins(
 				break
 			}
 		}
+		pluginsGlobals.RUnlock()
 	}
-	pluginsGlobals.RUnlock()
 	packet2, err := msg.PackBuffer(packet)
 	if err != nil {
 		return packet, err
