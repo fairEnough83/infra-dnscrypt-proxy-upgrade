@@ -2,37 +2,52 @@
 # Make sure to check the documentation at http://goreleaser.com
 before:
   hooks:
-    # You may remove this if you don't use go modules.
+    # Clean up go.mod and download deps
     - go mod tidy
-    # you may remove this if you don't need go generate
+    # Run go generate if needed
     - go generate ./...
+
 builds:
-  - env:
+  - id: default
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
       - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    main: ./cmd/yourapp/main.go
+    binary: "{{ .ProjectName }}"
+    ldflags:
+      - "-s -w"
+    mod_timestamp: ""
+
 archives:
-  -
-#    id: default
-#    builds:
-#      - default
+  - id: default
+    builds:
+      - default
+    format: tar.gz
     replacements:
       darwin: Darwin
+      windows: Windows
       amd64: x86_64
+      arm64: arm64
     files:
-#    - LICENSE.txt
-#    - README_{{.Os}}.md
-#    - CHANGELOG.md
-#    - docs/*
-#    - design/*.png
-#    - templates/**/*
-    - ex*.txt
-    - cloaking-*.txt
-    - localhost.pem
-    - d*.toml
-    - utils/**/*
-    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}" 
+      - LICENSE
+      - README.md
+      - CHANGELOG.md
+      - docs/**
+      - design/**/*.png
+      - templates/**/*
+      - ex*.txt
+      - cloaking-*.txt
+      - localhost.pem
+      - d*.toml
+      - utils/**/*
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}_v{{ .Arm }}{{ end }}"
+
 checksum:
   name_template: 'checksums.txt'
 snapshot:
